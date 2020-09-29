@@ -49,15 +49,26 @@ client.connect(err => {
       ProductCollection.insertOne(product)
       .then(result =>{
         console.log("data added successfully");
-        res.send("success")
+        res.redirect("/");
       })
     })
 
+    app.patch("/update/:id",(req,res)=>{
+      console.log(req.body)
+        ProductCollection.updateOne({_id : ObjectId(req.params.id)},
+        {
+          $set : {price : req.body.price, quantity : req.body.quantity}
+        })
+        .then(result => {
+            res.send(result.modifiedCount>0)
+        })
+    })
 
-    app.use("/delete/:id",(req,res)=>{
+
+    app.delete("/delete/:id",(req,res)=>{
       ProductCollection.deleteOne({_id : ObjectId(req.params.id)})
       .then(result => {
-        console.log(result)
+          res.send(result.deletedCount >0)
       })
     })
   
